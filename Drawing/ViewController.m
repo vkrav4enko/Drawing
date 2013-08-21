@@ -36,13 +36,6 @@
     self.angles = [NSMutableArray new];
     self.circles = [NSMutableArray new];
     self.points = [NSMutableArray new];
-    
-    
-//    self.lineDrawView = [[LineDrawView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height / 2)];
-//    [self.view addSubview:self.lineDrawView];
-//    self.lineDrawView.lines = [[NSMutableArray alloc] init];    
-//    [self.lineDrawView.lines addObject:[NSValue valueWithCGPoint:CGPointMake(600, 400)]];
-//    [self.lineDrawView.lines addObject:[NSValue valueWithCGPoint:CGPointMake( 50, 300)]];
 }
 
 -(float)distanceOfPoint:(CGPoint)p toLineWith:(CGPoint)v0 and:(CGPoint)v1
@@ -82,6 +75,12 @@
         p2 = [v2 CGPointValue];
         if([self distanceOfPoint:p toLineWith:p1 and:p2]<=d)
         {
+            if (_deleteMode)
+            {
+                [self.lines removeObject:v1];
+                [self.lines removeObject:v2];
+                return -1;
+            }
             [self.points addObject:v1];
             [self.points addObject:v2];
             return 1;
@@ -97,7 +96,14 @@
         p2 = [v2 CGPointValue];
         p3 = [v3 CGPointValue];
         if([self distanceOfPoint:p toLineWith:p1 and:p2]<=d || [self distanceOfPoint:p toLineWith:p2 and:p3]<=d)
-        {            
+        {
+            if (_deleteMode)
+            {
+                [self.angles removeObject:v1];
+                [self.angles removeObject:v2];
+                [self.angles removeObject:v3];
+                return -1;
+            }
             [self.points addObject:v1];
             [self.points addObject:v2];
             [self.points addObject:v3];
@@ -154,6 +160,12 @@
         dy = p.y - centre.y;
         if(sqrtf(dx*dx + dy*dy)<=r)
         {
+            if (_deleteMode)
+            {
+                [self.circles removeObjectAtIndex:i*2];
+                [self.circles removeObjectAtIndex:i*2];
+                return -1;
+            }
             _isLine = NO;
             _isAngle = NO;
             _isCircleCenter = YES;            
@@ -163,6 +175,12 @@
         }
         else if (sqrtf(dx*dx + dy*dy) <= (radius + r/2) && sqrtf(dx*dx + dy*dy) >= (radius - r/2))
         {
+            if (_deleteMode)
+            {
+                [self.circles removeObjectAtIndex:i*2];
+                [self.circles removeObjectAtIndex:i*2];
+                return -1;
+            }
             _isLine = NO;
             _isAngle = NO;
             _isCircleCenter = NO;
@@ -307,6 +325,9 @@
         CGRect rectangle = CGRectMake(p.x - 5, p.y - 5, 10.0f, 10.0f);
         CGContextFillEllipseInRect(context, rectangle);        
     }
+    
+    //draw curve
+    
 
     
     
