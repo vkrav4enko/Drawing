@@ -15,9 +15,11 @@
 @property (nonatomic, strong) NSMutableArray *angles;
 @property (nonatomic, strong) NSMutableArray *circles;
 @property (nonatomic, strong) NSMutableArray *points;
+@property (nonatomic, strong) NSMutableArray *curves;
 @property (nonatomic) BOOL isCircleCenter;
 @property (nonatomic) BOOL isLine;
 @property (nonatomic) BOOL isAngle;
+@property (nonatomic) BOOL isCurve;
 
 - (IBAction)drawLine:(id)sender;
 - (IBAction)drawAngle:(id)sender;
@@ -35,6 +37,7 @@
     self.lines = [NSMutableArray new];
     self.angles = [NSMutableArray new];
     self.circles = [NSMutableArray new];
+    self.curves = [NSMutableArray new];
     self.points = [NSMutableArray new];
 }
 
@@ -64,9 +67,9 @@
 
 -(int)getLineNearToPoint:(CGPoint)p withMaximumDistance:(float)d
 {    
-    CGPoint p1, p2, p3;
-    NSValue *v1, *v2, *v3;
-    
+    CGPoint p1, p2, p3, p4;
+    NSValue *v1, *v2, *v3, *v4;
+    //lines
     for(int i=0; i<self.lines.count/2; i++)
     {
         v1 = [self.lines objectAtIndex:i*2+0];
@@ -86,7 +89,7 @@
             return 1;
         }        
     }
-    
+    //angles
     for(int i=0; i<self.angles.count/3; i++)
     {
         v1 = [self.angles objectAtIndex:i*3+0];
@@ -109,19 +112,52 @@
             [self.points addObject:v3];
             return 1;
         }        
-    } 
+    }
+    //curves
+    for (int i =0; i<self.curves.count/4; i++)
+    {
+        v1 = [self.curves objectAtIndex:i*4+0];
+        v2 = [self.curves objectAtIndex:i*4+1];
+        v3 = [self.curves objectAtIndex:i*4+2];
+        v4 = [self.curves objectAtIndex:i*4+3];
+        p1 = [v1 CGPointValue];
+        p2 = [v2 CGPointValue];
+        p3 = [v3 CGPointValue];
+        p4 = [v4 CGPointValue];
+        
+        UIBezierPath *bezierPath = [[UIBezierPath alloc] init];
+        [bezierPath moveToPoint:p1];
+        [bezierPath addCurveToPoint:p2 controlPoint1:p3 controlPoint2:p4];
+        if([[self tapTargetForPath:bezierPath] containsPoint:p])
+        {
+            if (_deleteMode)
+            {
+                [self.curves removeObject:v1];
+                [self.curves removeObject:v2];
+                [self.curves removeObject:v3];
+                [self.curves removeObject:v4];
+                return -1;
+            }
+            [self.points removeAllObjects];
+            [self.points addObject:v1];
+            [self.points addObject:v2];
+            [self.points addObject:v3];
+            [self.points addObject:v4];
+            return 1;
+        }
+    }
     
     
     return -1;
 }
 
 -(int)getPointNearToPoint:(CGPoint)p withinRadius:(float)r
-{
+{    
     [self.points removeAllObjects];
     float dx, dy;
     CGPoint p2;
     NSValue *v;
-    
+    //lines
     for(int i=0; i<self.lines.count; i++)
     {
         v = [self.lines objectAtIndex:i];
@@ -133,10 +169,11 @@
             _isLine = YES;
             _isAngle = NO;
             _isCircleCenter = NO;
+            _isCurve = NO;
             return i;
         }
     }
-    
+    //angles
     for(int i=0; i<self.angles.count; i++)
     {
         v = [self.angles objectAtIndex:i];
@@ -148,10 +185,30 @@
             _isAngle = YES;
             _isLine = NO;
             _isCircleCenter = NO;
+            _isCurve = NO;
             return i;
         }
     }
-    
+    //curves
+    for(int i=0; i<self.curves.count; i++)
+    {
+        v = [self.curves objectAtIndex:i];
+        p2 = [v CGPointValue];
+        dx = p.x - p2.x;
+        dy = p.y - p2.y;
+        if(sqrtf(dx*dx + dy*dy)<=r)
+        {
+            _isAngle = NO;
+            _isLine = NO;
+            _isCircleCenter = NO;
+            _isCurve = YES;
+            
+            [self.points addObjectsFromArray:@[_curves[i - i%4],_curves[i - i%4 +1],_curves[i - i%4+2],_curves[i - i%4+3]]];
+            
+            return i;
+        }
+    }
+    //circles
     for(int i=0; i<self.circles.count/2; i++)
     {
         CGPoint centre = [[self.circles objectAtIndex:i*2+0] CGPointValue];
@@ -168,7 +225,8 @@
             }
             _isLine = NO;
             _isAngle = NO;
-            _isCircleCenter = YES;            
+            _isCircleCenter = YES;
+            _isCurve = NO;
             currentCircleIndex = i;
             [self.points addObject:[NSValue valueWithCGPoint:centre]];
             return i;
@@ -184,7 +242,8 @@
             _isLine = NO;
             _isAngle = NO;
             _isCircleCenter = NO;
-            currentCircleIndex = i;
+            _isCurve = NO;
+            currentCircleIndex = i;           
             [self.points addObject:[NSValue valueWithCGPoint:centre]];
             [self.points addObject:[NSValue valueWithCGPoint:p]];
             return i;
@@ -244,6 +303,11 @@
                 [self.angles replaceObjectAtIndex:currentPointIndex withObject:v];
                 [self.points replaceObjectAtIndex:currentPointIndex%3 withObject:v];
             }
+            if (_isCurve)
+            {
+                [self.curves replaceObjectAtIndex:currentPointIndex withObject:v];
+                [self.points replaceObjectAtIndex:currentPointIndex%4 withObject:v];
+            }
             
         }
         
@@ -270,6 +334,23 @@
     }
     [self showAll];
     
+}
+
+// this method will let you easily select a bezier path ( 15 px up and down of a path drawing)
+- (UIBezierPath *)tapTargetForPath:(UIBezierPath *)path
+{
+    if (path == nil) {
+        return nil;
+    }
+    
+    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(path.CGPath, NULL, fmaxf(35.0f, path.lineWidth), path.lineCapStyle, path.lineJoinStyle, path.miterLimit);
+    if (tapTargetPath == NULL) {
+        return nil;
+    }
+    
+    UIBezierPath *tapTarget = [UIBezierPath bezierPathWithCGPath:tapTargetPath];
+    CGPathRelease(tapTargetPath);
+    return tapTarget;
 }
 
 - (void) showAll
@@ -306,7 +387,21 @@
         CGContextAddLineToPoint(context, p3.x, p3.y);
     }
     CGContextStrokePath(context);
+    
+    //draw curve
+    for(int i=0; i<self.curves.count/4; i++)
+    {
+        CGPoint bezierStart = [[self.curves objectAtIndex:i*4+0] CGPointValue];
+        CGPoint bezierEnd = [[self.curves objectAtIndex:i*4+1] CGPointValue];
+        CGPoint bezierHelper1 = [[self.curves objectAtIndex:i*4+2] CGPointValue];
+        CGPoint bezierHelper2 = [[self.curves objectAtIndex:i*4+3] CGPointValue];
+        UIBezierPath *bezierPath = [[UIBezierPath alloc] init];
+        [bezierPath moveToPoint:bezierStart];
+        [bezierPath addCurveToPoint:bezierEnd controlPoint1:bezierHelper1 controlPoint2:bezierHelper2];
+        [bezierPath stroke];
         
+    }
+    
     // draw circle
     for(int i=0; i<self.circles.count/2; i++)
     {
@@ -326,8 +421,7 @@
         CGContextFillEllipseInRect(context, rectangle);        
     }
     
-    //draw curve
-    
+  
 
     
     
@@ -361,6 +455,15 @@
 }
 
 - (IBAction)drawCurve:(id)sender {
+    CGPoint bezierStart = {200, 260};
+    CGPoint bezierEnd = {400, 260};
+    CGPoint bezierHelper1 = {300, 370};
+    CGPoint bezierHelper2 = {240, 150};
+    [self.curves addObject:[NSValue valueWithCGPoint: bezierStart]];
+    [self.curves addObject:[NSValue valueWithCGPoint: bezierEnd]];
+    [self.curves addObject:[NSValue valueWithCGPoint: bezierHelper1]];
+    [self.curves addObject:[NSValue valueWithCGPoint: bezierHelper2]];
+    [self showAll];   
 }
 
 - (IBAction)deleteMode:(id)sender {
