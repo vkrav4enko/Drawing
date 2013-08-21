@@ -23,7 +23,6 @@
 		E7D7B54817C498BB0025D98C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D7B52317C498BA0025D98C /* Foundation.framework */; };
 		E7D7B55017C498BB0025D98C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E7D7B54E17C498BB0025D98C /* InfoPlist.strings */; };
 		E7D7B55317C498BB0025D98C /* DrawingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D7B55217C498BB0025D98C /* DrawingTests.m */; };
-		E7D7B55E17C4BADB0025D98C /* LineDrawView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D7B55D17C4BADB0025D98C /* LineDrawView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,8 +58,6 @@
 		E7D7B54F17C498BB0025D98C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E7D7B55117C498BB0025D98C /* DrawingTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawingTests.h; sourceTree = "<group>"; };
 		E7D7B55217C498BB0025D98C /* DrawingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DrawingTests.m; sourceTree = "<group>"; };
-		E7D7B55C17C4BADB0025D98C /* LineDrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineDrawView.h; sourceTree = "<group>"; };
-		E7D7B55D17C4BADB0025D98C /* LineDrawView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineDrawView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,8 +123,6 @@
 				E7D7B53C17C498BB0025D98C /* ViewController.h */,
 				E7D7B53D17C498BB0025D98C /* ViewController.m */,
 				E7D7B52817C498BA0025D98C /* Supporting Files */,
-				E7D7B55C17C4BADB0025D98C /* LineDrawView.h */,
-				E7D7B55D17C4BADB0025D98C /* LineDrawView.m */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -278,7 +273,6 @@
 				E7D7B52E17C498BA0025D98C /* main.m in Sources */,
 				E7D7B53217C498BA0025D98C /* AppDelegate.m in Sources */,
 				E7D7B53E17C498BB0025D98C /* ViewController.m in Sources */,
-				E7D7B55E17C4BADB0025D98C /* LineDrawView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

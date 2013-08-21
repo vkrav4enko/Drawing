@@ -10,7 +10,6 @@
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
-@property (nonatomic) BOOL deleteMode;
 @property (nonatomic, strong) NSMutableArray *lines;
 @property (nonatomic, strong) NSMutableArray *angles;
 @property (nonatomic, strong) NSMutableArray *circles;
@@ -20,6 +19,7 @@
 @property (nonatomic) BOOL isLine;
 @property (nonatomic) BOOL isAngle;
 @property (nonatomic) BOOL isCurve;
+@property (nonatomic) BOOL deleteMode;
 
 - (IBAction)drawLine:(id)sender;
 - (IBAction)drawAngle:(id)sender;
@@ -69,7 +69,8 @@
 {    
     CGPoint p1, p2, p3, p4;
     NSValue *v1, *v2, *v3, *v4;
-    //lines
+    
+    //Touch a line
     for(int i=0; i<self.lines.count/2; i++)
     {
         v1 = [self.lines objectAtIndex:i*2+0];
@@ -89,7 +90,8 @@
             return 1;
         }        
     }
-    //angles
+    
+    //Touch an angle
     for(int i=0; i<self.angles.count/3; i++)
     {
         v1 = [self.angles objectAtIndex:i*3+0];
@@ -113,7 +115,8 @@
             return 1;
         }        
     }
-    //curves
+    
+    //Touch a curve
     for (int i =0; i<self.curves.count/4; i++)
     {
         v1 = [self.curves objectAtIndex:i*4+0];
@@ -157,7 +160,8 @@
     float dx, dy;
     CGPoint p2;
     NSValue *v;
-    //lines
+    
+    //Touch near line points
     for(int i=0; i<self.lines.count; i++)
     {
         v = [self.lines objectAtIndex:i];
@@ -173,7 +177,8 @@
             return i;
         }
     }
-    //angles
+    
+    //Touch near angle points
     for(int i=0; i<self.angles.count; i++)
     {
         v = [self.angles objectAtIndex:i];
@@ -189,7 +194,8 @@
             return i;
         }
     }
-    //curves
+    
+    //Touch near curve points
     for(int i=0; i<self.curves.count; i++)
     {
         v = [self.curves objectAtIndex:i];
@@ -208,7 +214,8 @@
             return i;
         }
     }
-    //circles
+
+    //Touch near circle points
     for(int i=0; i<self.circles.count/2; i++)
     {
         CGPoint centre = [[self.circles objectAtIndex:i*2+0] CGPointValue];
@@ -260,19 +267,19 @@
     currentCircleIndex = -1;
     currentPointIndex = -1;
     
-    for(UITouch *t in touches)
+    for(UITouch *touch in touches)
     {
         // check if a starting/ending point is near the current touch
-        CGPoint p = [t locationInView:self.view];
-        iPoint = [self getPointNearToPoint:p withinRadius:10];
+        CGPoint point = [touch locationInView:self.view];
+        iPoint = [self getPointNearToPoint:point withinRadius:10];
         if(iPoint != -1)
         {
             currentPointIndex = iPoint;
-            self.currentTouch = t;            
+            self.currentTouch = touch;            
         }        
         
         // check if current touch is near a line
-        [self getLineNearToPoint:p withMaximumDistance:10];
+        [self getLineNearToPoint:point withMaximumDistance:10];
         break;
     }
     
@@ -289,7 +296,7 @@
         
         CGPoint p = [t locationInView:self.view];
         
-        // Are we moving a starting/ending point?
+        // Are we moving an active point?
         if(currentPointIndex != -1)
         {
             NSValue *v = [NSValue valueWithCGPoint:p];
