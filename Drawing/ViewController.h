@@ -12,7 +12,7 @@
 @interface ViewController : UIViewController
 {
     CGPoint dragStartingPoint, lineOriginStart, lineOriginEnd;
-    int currentPointIndex, currentLineIndex;
+    int currentPointIndex, currentCircleIndex;
 }
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (nonatomic, strong) LineDrawView *lineDrawView;

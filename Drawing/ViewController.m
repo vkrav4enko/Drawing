@@ -13,8 +13,9 @@
 @property (nonatomic) BOOL deleteMode;
 @property (nonatomic, strong) NSMutableArray *lines;
 @property (nonatomic, strong) NSMutableArray *angles;
+@property (nonatomic, strong) NSMutableArray *circles;
 @property (nonatomic, strong) NSMutableArray *points;
-@property (nonatomic) BOOL showAnchorPoints;
+@property (nonatomic) BOOL isCircleCenter;
 @property (nonatomic) BOOL isLine;
 @property (nonatomic) BOOL isAngle;
 
@@ -33,6 +34,7 @@
     [super viewDidLoad];
     self.lines = [NSMutableArray new];
     self.angles = [NSMutableArray new];
+    self.circles = [NSMutableArray new];
     self.points = [NSMutableArray new];
     
     
@@ -68,8 +70,7 @@
 }
 
 -(int)getLineNearToPoint:(CGPoint)p withMaximumDistance:(float)d
-{
-    [self.points removeAllObjects];
+{    
     CGPoint p1, p2, p3;
     NSValue *v1, *v2, *v3;
     
@@ -102,13 +103,15 @@
             [self.points addObject:v3];
             return 1;
         }        
-    }
+    } 
+    
     
     return -1;
 }
 
 -(int)getPointNearToPoint:(CGPoint)p withinRadius:(float)r
 {
+    [self.points removeAllObjects];
     float dx, dy;
     CGPoint p2;
     NSValue *v;
@@ -123,6 +126,7 @@
         {
             _isLine = YES;
             _isAngle = NO;
+            _isCircleCenter = NO;
             return i;
         }
     }
@@ -137,8 +141,37 @@
         {
             _isAngle = YES;
             _isLine = NO;
+            _isCircleCenter = NO;
             return i;
         }
+    }
+    
+    for(int i=0; i<self.circles.count/2; i++)
+    {
+        CGPoint centre = [[self.circles objectAtIndex:i*2+0] CGPointValue];
+        float radius = [[self.circles objectAtIndex:i*2+1] floatValue];
+        dx = p.x - centre.x;
+        dy = p.y - centre.y;
+        if(sqrtf(dx*dx + dy*dy)<=r)
+        {
+            _isLine = NO;
+            _isAngle = NO;
+            _isCircleCenter = YES;            
+            currentCircleIndex = i;
+            [self.points addObject:[NSValue valueWithCGPoint:centre]];
+            return i;
+        }
+        else if (sqrtf(dx*dx + dy*dy) <= (radius + r/2) && sqrtf(dx*dx + dy*dy) >= (radius - r/2))
+        {
+            _isLine = NO;
+            _isAngle = NO;
+            _isCircleCenter = NO;
+            currentCircleIndex = i;
+            [self.points addObject:[NSValue valueWithCGPoint:centre]];
+            [self.points addObject:[NSValue valueWithCGPoint:p]];
+            return i;
+        }       
+        
     }
     
     return -1;
@@ -147,7 +180,7 @@
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     int iPoint;
-    currentLineIndex = -1;
+    currentCircleIndex = -1;
     currentPointIndex = -1;
     
     for(UITouch *t in touches)
@@ -196,23 +229,23 @@
             
         }
         
-//        // Are we moving a line?
-//        if(currentLineIndex != -1)
-//        {
-//            // calculate drag distance
-//            float dx = p.x - dragStartingPoint.x;
-//            float dy = p.y - dragStartingPoint.y;
-//            
-//            // calculate new starting/ending points
-//            CGPoint p1 = CGPointMake(lineOriginStart.x+dx, lineOriginStart.y+dy);
-//            CGPoint p2 = CGPointMake(lineOriginEnd.x+dx, lineOriginEnd.y+dy);
-//            NSValue *v1 = [NSValue valueWithCGPoint:p1];
-//            NSValue *v2 = [NSValue valueWithCGPoint:p2];
-//            
-//            // replace old values
-//            [self.lines replaceObjectAtIndex:currentLineIndex*2+0 withObject:v1];
-//            [self.lines replaceObjectAtIndex:currentLineIndex*2+1 withObject:v2];
-//        }
+        // Are we moving a circle?
+        if(currentCircleIndex != -1)
+        {
+            NSValue *v = [NSValue valueWithCGPoint:p];
+            if (_isCircleCenter)
+            {
+                [self.circles replaceObjectAtIndex:currentCircleIndex*2 withObject:v];
+                [self.points replaceObjectAtIndex:currentCircleIndex*2%2 withObject:v];
+            }
+            else
+            {
+                CGPoint centre = [[self.circles objectAtIndex:currentCircleIndex*2] CGPointValue];
+                float radius = sqrtf(powf((p.x - centre.x), 2) + powf((p.y - centre.y), 2));
+                [self.circles replaceObjectAtIndex:currentCircleIndex*2 + 1 withObject:@(radius)];
+                [self.points replaceObjectAtIndex:currentCircleIndex*2%2 + 1 withObject:v];
+            }
+        }
         
         // only use first touch, discard the rest
         break;
@@ -255,6 +288,16 @@
         CGContextAddLineToPoint(context, p3.x, p3.y);
     }
     CGContextStrokePath(context);
+        
+    // draw circle
+    for(int i=0; i<self.circles.count/2; i++)
+    {
+        CGPoint centre = [[self.circles objectAtIndex:i*2+0] CGPointValue];
+        float radius = [[self.circles objectAtIndex:i*2+1] floatValue];
+        CGRect circleRect = CGRectMake(centre.x - radius, centre.y - radius, radius*2, radius*2);
+        CGContextStrokeEllipseInRect(context, circleRect);
+        
+    }
     
     // draw points
     for(int i=0; i<self.points.count; i++)
@@ -291,6 +334,9 @@
 }
 
 - (IBAction)drawCircle:(id)sender {
+    [self.circles addObject:[NSValue valueWithCGPoint:CGPointMake(400, 400)]];
+    [self.circles addObject:@50];
+    [self showAll];    
 }
 
 - (IBAction)drawCurve:(id)sender {
