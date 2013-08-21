@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface lineDrawView : UIView
-
+@interface LineDrawView : UIView
+@property (nonatomic, strong) NSMutableArray *lines;
+@property (nonatomic) BOOL showAnchorPoints;
+- (void) drawLine;
 @end
