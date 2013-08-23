@@ -7,7 +7,6 @@
         <!--View Controller-->
         <scene sceneID="4">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3" sceneMemberID="firstResponder"/>
                 <viewController id="2" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5">
                         <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
@@ -16,6 +15,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zEw-DQ-fNi">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="63" type="user" id="Dkb-Ny-oGA"/>
+                                    <constraint firstAttribute="width" constant="63" id="Lla-Wh-MtT"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Line">
@@ -84,37 +84,31 @@
                                     <action selector="deleteMode:" destination="2" eventType="touchUpInside" id="cTH-21-9HN"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkk-qg-jNk">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="520" id="0JG-uM-jyB"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ffy-rk-33h" firstAttribute="width" secondItem="gxj-O0-0gC" secondAttribute="width" type="user" id="1EM-rJ-Og8"/>
                             <constraint firstItem="zEw-DQ-fNi" firstAttribute="leading" secondItem="5" secondAttribute="leading" constant="186" id="1tj-si-sh7"/>
-                            <constraint firstItem="gkk-qg-jNk" firstAttribute="trailing" secondItem="5" secondAttribute="trailing" type="default" id="3KD-5H-QNl"/>
+                            <constraint firstAttribute="trailing" secondItem="xLT-so-ldI" secondAttribute="trailing" constant="186" id="2iR-8X-uoC"/>
                             <constraint firstItem="mNj-tl-8Mq" firstAttribute="baseline" secondItem="zEw-DQ-fNi" secondAttribute="baseline" type="default" id="4zc-mE-7aw"/>
                             <constraint firstItem="mNj-tl-8Mq" firstAttribute="leading" secondItem="zEw-DQ-fNi" secondAttribute="trailing" constant="20" type="user" id="6mK-dt-QP4"/>
                             <constraint firstItem="gxj-O0-0gC" firstAttribute="leading" secondItem="ffy-rk-33h" secondAttribute="trailing" constant="20" type="user" id="6nH-Ok-lHW"/>
                             <constraint firstItem="xLT-so-ldI" firstAttribute="baseline" secondItem="gxj-O0-0gC" secondAttribute="baseline" type="default" id="75p-cF-zlc"/>
                             <constraint firstItem="ffy-rk-33h" firstAttribute="width" secondItem="mNj-tl-8Mq" secondAttribute="width" type="user" id="JXq-Xq-bcy"/>
                             <constraint firstItem="xLT-so-ldI" firstAttribute="leading" secondItem="gxj-O0-0gC" secondAttribute="trailing" constant="20" type="user" id="KiM-gM-Mob"/>
+                            <constraint firstAttribute="bottom" secondItem="zEw-DQ-fNi" secondAttribute="bottom" constant="433" id="NzR-hJ-F2B"/>
                             <constraint firstItem="ffy-rk-33h" firstAttribute="baseline" secondItem="mNj-tl-8Mq" secondAttribute="baseline" type="default" id="OEu-xz-3jX"/>
                             <constraint firstItem="gxj-O0-0gC" firstAttribute="baseline" secondItem="ffy-rk-33h" secondAttribute="baseline" type="default" id="S8q-Bd-jfe"/>
-                            <constraint firstItem="gkk-qg-jNk" firstAttribute="leading" secondItem="5" secondAttribute="leading" type="default" id="dxk-Pw-P9v"/>
-                            <constraint firstItem="zEw-DQ-fNi" firstAttribute="top" secondItem="gkk-qg-jNk" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="fBa-o2-iGT"/>
+                            <constraint firstItem="ffy-rk-33h" firstAttribute="leading" secondItem="5" secondAttribute="leading" constant="352" id="SUW-t3-7df"/>
                             <constraint firstItem="ffy-rk-33h" firstAttribute="width" secondItem="zEw-DQ-fNi" secondAttribute="width" type="user" id="lLY-vP-tYA"/>
-                            <constraint firstItem="gkk-qg-jNk" firstAttribute="top" secondItem="5" secondAttribute="top" type="default" id="nwe-5l-FhB"/>
                             <constraint firstItem="ffy-rk-33h" firstAttribute="leading" secondItem="mNj-tl-8Mq" secondAttribute="trailing" constant="20" type="user" id="p2k-CZ-wKl"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="deleteButton" destination="xLT-so-ldI" id="mLB-OM-ca7"/>
-                        <outlet property="imageView" destination="gkk-qg-jNk" id="nOo-Io-6Pd"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="78" y="-137"/>
         </scene>
