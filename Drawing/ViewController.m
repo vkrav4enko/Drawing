@@ -231,7 +231,7 @@
     if (_isCircle)
     {
         CIrcle *circle = [_circles objectAtIndex:currentIndex];
-        [self showPoints:circle.centerPoint, [_currentTouch locationInView:self.view], CGPointZero];
+        [self showPoints:circle.centerPoint, circle.pointToChange? CGPointZero : [_currentTouch locationInView:self.view], CGPointZero];
     }        
 }
 
