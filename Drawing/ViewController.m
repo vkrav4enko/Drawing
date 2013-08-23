@@ -71,6 +71,7 @@
             }
             i++;
         }
+        if (_isLine) break;
         
         i = 0;
         for (Angle *angle in _angles)
@@ -91,6 +92,7 @@
             }
             i++;
         }
+        if (_isAngle) break;
         
         i = 0;
         for (Curve *curve in _curves)
@@ -111,6 +113,7 @@
             }
             i++;
         }
+        if (_isCurve) break;
         
         i = 0;
         for (CIrcle *circle in _circles)
