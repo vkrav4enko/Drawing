@@ -57,8 +57,14 @@
         {
             _isLine = [line checkPoint:point withinRadius:10];
             if (_isLine)
-            {                
-                
+            {
+                if (_deleteMode)
+                {
+                    [line removeFromSuperview];
+                    [_lines removeObject:line];
+                    _isLine = NO;
+                    break;
+                }
                 currentIndex = i;
                 _currentTouch = touch;
                 break;
@@ -72,7 +78,13 @@
             _isAngle = [angle checkPoint:point withinRadius:10];
             if (_isAngle)
             {
-                NSLog (@"Angle show points");
+                if (_deleteMode)
+                {
+                    [angle removeFromSuperview];
+                    [_angles removeObject:angle];
+                    _isAngle = NO;
+                    break;
+                }
                 currentIndex = i;
                 _currentTouch = touch;
                 break;
@@ -86,7 +98,13 @@
             _isCurve = [curve checkPoint:point withinRadius:10];
             if (_isCurve)
             {
-                NSLog (@"Curve show points");
+                if (_deleteMode)
+                {
+                    [curve removeFromSuperview];
+                    [_curves removeObject:curve];
+                    _isCurve = NO;
+                    break;
+                }
                 currentIndex = i;
                 _currentTouch = touch;
                 break;
@@ -100,7 +118,13 @@
             _isCircle = [circle checkPoint:point withinRadius:20];
             if (_isCircle)
             {
-                NSLog (@"Circle show points");
+                if (_deleteMode)
+                {
+                    [circle removeFromSuperview];
+                    [_circles removeObject:circle];
+                    _isCircle = NO;
+                    break;
+                }
                 currentIndex = i;
                 _currentTouch = touch;
                 break;
@@ -205,8 +229,7 @@
     {
         CIrcle *circle = [_circles objectAtIndex:currentIndex];
         [self showPoints:circle.centerPoint, [_currentTouch locationInView:self.view], CGPointZero];
-    }
-        
+    }        
 }
 
 - (void) showPoints: (CGPoint) point, ...
@@ -235,8 +258,6 @@
 }
 
 - (IBAction)drawLine:(id)sender {
-    CGPoint startPoint = CGPointMake(600, 400);
-    CGPoint endPoint = CGPointMake(50, 300);
     Line *line = [[Line alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
     [_lines addObject:line];
     [self.view addSubview:line];  
