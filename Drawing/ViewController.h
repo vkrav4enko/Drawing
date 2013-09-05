@@ -13,5 +13,6 @@
     int currentIndex;
 }
 
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (nonatomic, strong) UITouch *currentTouch;
 @end

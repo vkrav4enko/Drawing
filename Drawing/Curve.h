@@ -14,6 +14,7 @@
 @property (nonatomic) CGPoint endPoint;
 @property (nonatomic) CGPoint firstHelper;
 @property (nonatomic) CGPoint secondHelper;
+@property (nonatomic, strong) NSMutableArray *points;
 - (void)setupLayer;
 - (BOOL)checkPoint: (CGPoint) point withinRadius:(float)r;
 @end

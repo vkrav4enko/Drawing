@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E7071FE617D89F110076230B /* Shape.m in Sources */ = {isa = PBXBuildFile; fileRef = E7071FE517D89F110076230B /* Shape.m */; };
 		E7707ABD17C6406500C3F099 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7707ABC17C6406500C3F099 /* QuartzCore.framework */; };
 		E7707AC317C6433400C3F099 /* Line.m in Sources */ = {isa = PBXBuildFile; fileRef = E7707AC217C6433400C3F099 /* Line.m */; };
 		E789589517C71E4200E201FC /* Angle.m in Sources */ = {isa = PBXBuildFile; fileRef = E789589417C71E4200E201FC /* Angle.m */; };
 		E789589817C7222A00E201FC /* Curve.m in Sources */ = {isa = PBXBuildFile; fileRef = E789589717C7222A00E201FC /* Curve.m */; };
-		E789589B17C724C400E201FC /* CIrcle.m in Sources */ = {isa = PBXBuildFile; fileRef = E789589A17C724C400E201FC /* CIrcle.m */; };
+		E789589B17C724C400E201FC /* Circle.m in Sources */ = {isa = PBXBuildFile; fileRef = E789589A17C724C400E201FC /* Circle.m */; };
+		E7983A3917D8B6B800B8A0F0 /* ShapeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7983A3817D8B6B800B8A0F0 /* ShapeView.m */; };
 		E7D7B52217C498BA0025D98C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D7B52117C498BA0025D98C /* UIKit.framework */; };
 		E7D7B52417C498BA0025D98C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D7B52317C498BA0025D98C /* Foundation.framework */; };
 		E7D7B52617C498BA0025D98C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D7B52517C498BA0025D98C /* CoreGraphics.framework */; };
@@ -41,6 +43,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E7071FE417D89F110076230B /* Shape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shape.h; sourceTree = "<group>"; };
+		E7071FE517D89F110076230B /* Shape.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shape.m; sourceTree = "<group>"; };
 		E7707ABC17C6406500C3F099 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E7707AC117C6433400C3F099 /* Line.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Line.h; sourceTree = "<group>"; };
 		E7707AC217C6433400C3F099 /* Line.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Line.m; sourceTree = "<group>"; };
@@ -48,8 +52,10 @@
 		E789589417C71E4200E201FC /* Angle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Angle.m; sourceTree = "<group>"; };
 		E789589617C7222A00E201FC /* Curve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Curve.h; sourceTree = "<group>"; };
 		E789589717C7222A00E201FC /* Curve.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Curve.m; sourceTree = "<group>"; };
-		E789589917C724C400E201FC /* CIrcle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CIrcle.h; sourceTree = "<group>"; };
-		E789589A17C724C400E201FC /* CIrcle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIrcle.m; sourceTree = "<group>"; };
+		E789589917C724C400E201FC /* Circle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Circle.h; sourceTree = "<group>"; };
+		E789589A17C724C400E201FC /* Circle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Circle.m; sourceTree = "<group>"; };
+		E7983A3717D8B6B800B8A0F0 /* ShapeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeView.h; sourceTree = "<group>"; };
+		E7983A3817D8B6B800B8A0F0 /* ShapeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShapeView.m; sourceTree = "<group>"; };
 		E7D7B51E17C498BA0025D98C /* Drawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7D7B52117C498BA0025D98C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E7D7B52317C498BA0025D98C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -144,8 +150,12 @@
 				E789589417C71E4200E201FC /* Angle.m */,
 				E789589617C7222A00E201FC /* Curve.h */,
 				E789589717C7222A00E201FC /* Curve.m */,
-				E789589917C724C400E201FC /* CIrcle.h */,
-				E789589A17C724C400E201FC /* CIrcle.m */,
+				E789589917C724C400E201FC /* Circle.h */,
+				E789589A17C724C400E201FC /* Circle.m */,
+				E7071FE417D89F110076230B /* Shape.h */,
+				E7071FE517D89F110076230B /* Shape.m */,
+				E7983A3717D8B6B800B8A0F0 /* ShapeView.h */,
+				E7983A3817D8B6B800B8A0F0 /* ShapeView.m */,
 				E7D7B52817C498BA0025D98C /* Supporting Files */,
 			);
 			path = Drawing;
@@ -300,7 +310,9 @@
 				E7707AC317C6433400C3F099 /* Line.m in Sources */,
 				E789589517C71E4200E201FC /* Angle.m in Sources */,
 				E789589817C7222A00E201FC /* Curve.m in Sources */,
-				E789589B17C724C400E201FC /* CIrcle.m in Sources */,
+				E789589B17C724C400E201FC /* Circle.m in Sources */,
+				E7071FE617D89F110076230B /* Shape.m in Sources */,
+				E7983A3917D8B6B800B8A0F0 /* ShapeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

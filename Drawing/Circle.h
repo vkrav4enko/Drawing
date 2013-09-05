@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CIrcle : UIView
+@interface Circle : UIView
 @property (nonatomic) CGPoint *pointToChange;
 @property (nonatomic) CGPoint centerPoint;
 @property (nonatomic) float radius;

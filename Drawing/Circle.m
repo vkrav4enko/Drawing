@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Владимир. All rights reserved.
 //
 
-#import "CIrcle.h"
+#import "Circle.h"
 
-@implementation CIrcle
+@implementation Circle
 
 + (Class)layerClass
 {
@@ -68,7 +68,7 @@
         return nil;
     }
     
-    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(path.CGPath, NULL, fmaxf(20.0f, path.lineWidth), path.lineCapStyle, path.lineJoinStyle, path.miterLimit);
+    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(path.CGPath, NULL, fmaxf(40.0f, path.lineWidth), path.lineCapStyle, path.lineJoinStyle, path.miterLimit);
     if (tapTargetPath == NULL) {
         return nil;
     }

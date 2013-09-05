@@ -93,7 +93,7 @@
         return nil;
     }
     
-    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(path.CGPath, NULL, fmaxf(20.0f, path.lineWidth), path.lineCapStyle, path.lineJoinStyle, path.miterLimit);
+    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(path.CGPath, NULL, fmaxf(40.0f, path.lineWidth), path.lineCapStyle, path.lineJoinStyle, path.miterLimit);
     if (tapTargetPath == NULL) {
         return nil;
     }
