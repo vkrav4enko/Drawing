@@ -132,8 +132,29 @@
     }
     if (_isCircle)
     {        
-        [self showPoints:@[[NSValue valueWithCGPoint:_circle.centerPoint], [NSValue valueWithCGPoint:_circle.pointToChange? CGPointZero : [_currentTouch locationInView:self.view]]]];
+        [self showPoints:@[[NSValue valueWithCGPoint:_circle.centerPoint], [NSValue valueWithCGPoint:_circle.pointToChange? CGPointZero : [self findPointOnCircumferenceByTouchPoint: [_currentTouch locationInView:_imageView]]]]];
     }        
+}
+
+- (CGPoint) findPointOnCircumferenceByTouchPoint: (CGPoint) point
+{
+    CGPoint currentPoint;
+    float minDistance = 20;
+    for (float angle = 0; angle < 360; angle ++)
+    {
+        float dx, dy;
+        float x = _circle.radius * cosf(angle * 3.14 / 180) + _circle.centerPoint.x;
+        float y = _circle.radius * sinf(angle * 3.14 / 180) + _circle.centerPoint.y;
+        dx = point.x - x;
+        dy = point.y - y;
+        float distanceToPoint = sqrtf(dx*dx + dy*dy);
+        if (distanceToPoint < minDistance)
+        {
+            minDistance = distanceToPoint;
+            currentPoint = CGPointMake(x, y);
+        }
+    }    
+    return currentPoint;
 }
 
 - (void) showPoints: (NSArray *) points
@@ -149,8 +170,6 @@
         [_points addObject:layer];
         [self.view.layer addSublayer:layer];        
     }    
-    
-   
 }
 
 - (void) drawInMainContext
@@ -186,6 +205,8 @@
     _line = nil;
     _circle = nil;
     _imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    _eraserMode = NO;
+    [_deleteButton setTitleColor: [UIColor blueColor] forState:UIControlStateNormal ];
 }
 
 - (void)didReceiveMemoryWarning
@@ -194,9 +215,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)drawLine:(id)sender {
-    [self drawInMainContext];
-    _eraserMode = NO;
+- (IBAction)drawLine:(id)sender
+{
+    [self drawInMainContext];    
     ShapeView *line = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
     [line.points addObject:[NSValue valueWithCGPoint:CGPointMake(100, 200)]];
     [line.points addObject:[NSValue valueWithCGPoint:CGPointMake(300, 400)]];
@@ -205,9 +226,9 @@
     [_imageView addSubview:line];  
 }
 
-- (IBAction)drawAngle:(id)sender {
+- (IBAction)drawAngle:(id)sender
+{
     [self drawInMainContext];
-    _eraserMode = NO;
     ShapeView *angle = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
     [angle.points addObject:[NSValue valueWithCGPoint:CGPointMake(50, 200)]];
     [angle.points addObject:[NSValue valueWithCGPoint:CGPointMake(250, 400)]];
@@ -217,18 +238,18 @@
     [_imageView addSubview:angle];
 }
 
-- (IBAction)drawCircle:(id)sender {
+- (IBAction)drawCircle:(id)sender
+{
     [self drawInMainContext];
-    _eraserMode = NO;
     Circle *circle = [[Circle alloc] initWithFrame:CGRectMake (0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
     _circle = circle;
     [_imageView addSubview:circle];
 }
 
-- (IBAction)drawCurve:(id)sender {
+- (IBAction)drawCurve:(id)sender
+{
     [self drawInMainContext];
     _drawCurveMode = YES;
-    _eraserMode = NO;
     ShapeView *curve = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
                                                            self.view.frame.size.height/2)];
     _line = curve;
@@ -236,25 +257,17 @@
    
 }
 
-- (IBAction)deleteMode:(id)sender {
+- (IBAction)deleteMode:(id)sender
+{
     [self drawInMainContext];
-    _eraserMode = !_eraserMode;
-    if (_eraserMode)
-    {         
-        ShapeView *curve = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
-                                                                       self.view.frame.size.height/2)];
-        _line = curve;
-        [_imageView addSubview:curve];
-    }
+    _eraserMode = YES;
+            
+    ShapeView *curve = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
+                                                                   self.view.frame.size.height/2)];
+    _line = curve;
+    [_imageView addSubview:curve];    
     _line.eraserMode = _eraserMode;
-    [_deleteButton setTitleColor: _line.eraserMode? [UIColor redColor] : [UIColor blueColor] forState:UIControlStateNormal ];
+    [_deleteButton setTitleColor: [UIColor redColor] forState:UIControlStateNormal ];
 }
-
-
-
-
-
-
-
 
 @end

@@ -36,7 +36,8 @@
     {
         layer.strokeColor = [[UIColor whiteColor] CGColor];
         layer.lineWidth = 50;
-    }        
+    }
+        
     UIBezierPath *path = [UIBezierPath bezierPath];
     for (int i = 0; i < _points.count; i++)
     {
