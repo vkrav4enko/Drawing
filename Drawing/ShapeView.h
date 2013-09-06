@@ -14,4 +14,5 @@
 @property (nonatomic) BOOL eraserMode;
 - (void)setupLayer;
 - (BOOL)checkPoint: (CGPoint) point withinRadius:(float)r;
+- (void) movePoint: (CGPoint) point;
 @end

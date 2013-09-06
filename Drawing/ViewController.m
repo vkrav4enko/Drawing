@@ -14,13 +14,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
 @property (nonatomic, strong) NSMutableArray *points;
 
-@property (nonatomic, strong) ShapeView *shape;
+@property (nonatomic, strong) ShapeView *line;
 @property (nonatomic, strong) Circle *circle;
 @property (nonatomic) BOOL isCircle;
 @property (nonatomic) BOOL isLine;
-@property (nonatomic) BOOL deleteMode;
 @property (nonatomic) BOOL drawCurveMode;
-
+@property (nonatomic) BOOL eraserMode;
 - (IBAction)drawLine:(id)sender;
 - (IBAction)drawAngle:(id)sender;
 - (IBAction)drawCircle:(id)sender;
@@ -39,16 +38,13 @@
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-
     _isLine = NO;
-    _isCircle = NO;
-
-    
+    _isCircle = NO;    
     for(UITouch *touch in touches)
     {
         // check if a starting/ending point is near the current touch
         CGPoint point = [touch locationInView:self.view];
-        _isLine = [_shape checkPoint:point withinRadius:20];
+        _isLine = [_line checkPoint:point withinRadius:20];
         if (_isLine)
         {
             _currentTouch = touch;
@@ -68,12 +64,12 @@
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (_drawCurveMode)
+    if (_drawCurveMode || _eraserMode)
     {
         UITouch *touch = [touches anyObject];
         CGPoint currentPoint = [touch locationInView:self.view];
-        [_shape.points addObject:[NSValue valueWithCGPoint:currentPoint]];
-        [_shape setupLayer];
+        [_line.points addObject:[NSValue valueWithCGPoint:currentPoint]];
+        [_line setupLayer];
     }
     else
     {
@@ -82,50 +78,13 @@
             if(t != self.currentTouch) continue;        
             CGPoint p = [t locationInView:self.view];
             if (_isLine)
-            {              
-                
-                if (!CGPointEqualToPoint(_shape.pointToChange, CGPointZero))
+            {
+                if (!CGPointEqualToPoint(_line.pointToChange, CGPointZero))
                 {
-                    if (_shape.points.count > 4)
-                    {
-                        if (CGPointEqualToPoint(_shape.pointToChange, [[_shape.points objectAtIndex:0] CGPointValue]))
-                        {
-                            float dx, dy;
-                            dx = p.x - _shape.pointToChange.x;
-                            dy = p.y - _shape.pointToChange.y;
-                            for (int i = 0; i < _shape.points.count; i++)
-                            {
-                                CGPoint oldPoint = [[_shape.points objectAtIndex:i] CGPointValue];
-                                CGPoint newPoint = CGPointMake(oldPoint.x + dx, oldPoint.y +dy);
-                                [_shape.points replaceObjectAtIndex:i withObject: [NSValue valueWithCGPoint:newPoint]];
-                            }
-                            _shape.pointToChange = [[_shape.points objectAtIndex:0] CGPointValue];
-                            [_shape setupLayer];
-                        }                            
-                    }
-                    else
-                    {
-                        int i = 0;
-                        for (NSValue *value in _shape.points)
-                        {
-                            CGPoint point = [value CGPointValue];
-                            if (CGPointEqualToPoint(point, _shape.pointToChange))
-                            {
-                                break;
-                            }
-                            i++;
-                        }
-                        _shape.pointToChange = p;
-                        [_shape.points replaceObjectAtIndex:i withObject:[NSValue valueWithCGPoint: _shape.pointToChange]];
-                        [_shape setupLayer];
-                        break;
-                    }         
-                    
-                }
-                
-            }
-       
-           if (_isCircle)
+                    [_line movePoint:p];                    
+                }                
+            }       
+            if (_isCircle)
             {
                 if (_circle.pointToChange)
                 {
@@ -142,7 +101,7 @@
                     [_circle setupLayer];
                     break;
                 }
-           }
+            }
         }
     }
    [self showPoints];
@@ -163,10 +122,13 @@
     
     if (_isLine)
     {
-        if (_shape.points.count < 4)
-            [self showPoints:_shape.points];
+        if (_line.points.count < 4)
+            [self showPoints:_line.points];
         else
-            [self showPoints:@[[_shape.points objectAtIndex:0]]];
+        {
+            if (_eraserMode == NO)
+                [self showPoints:@[[_line.points objectAtIndex:0]]];
+        }
     }
     if (_isCircle)
     {        
@@ -206,11 +168,22 @@
     //draw shape
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextSetLineWidth(context, 2.0);
-    CGPathRef path = _shape?  [(CAShapeLayer *)_shape.layer path] : [(CAShapeLayer *) _circle.layer path];
+    if (_line.eraserMode)
+    {
+        CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
+        CGContextSetLineWidth(context, 50.0);
+    }
+    CGPathRef path = _line?  [(CAShapeLayer *)_line.layer path] : [(CAShapeLayer *) _circle.layer path];
     CGContextAddPath(context, path);
     CGContextStrokePath(context);    
-    [_shape removeFromSuperview];
-    _shape = nil;
+    [_line removeFromSuperview];
+    [_circle removeFromSuperview];
+    for (CAShapeLayer *layer in _points)
+    {
+        [layer removeFromSuperlayer];
+    }
+    [_points removeAllObjects];
+    _line = nil;
     _circle = nil;
     _imageView.image = UIGraphicsGetImageFromCurrentImageContext();
 }
@@ -223,51 +196,65 @@
 
 - (IBAction)drawLine:(id)sender {
     [self drawInMainContext];
+    _eraserMode = NO;
     ShapeView *line = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
     [line.points addObject:[NSValue valueWithCGPoint:CGPointMake(100, 200)]];
     [line.points addObject:[NSValue valueWithCGPoint:CGPointMake(300, 400)]];
-    _shape = line;
-    [_shape setupLayer];
-    [self.view addSubview:line];  
+    _line = line;
+    [_line setupLayer];
+    [_imageView addSubview:line];  
 }
 
 - (IBAction)drawAngle:(id)sender {
     [self drawInMainContext];
+    _eraserMode = NO;
     ShapeView *angle = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
     [angle.points addObject:[NSValue valueWithCGPoint:CGPointMake(50, 200)]];
     [angle.points addObject:[NSValue valueWithCGPoint:CGPointMake(250, 400)]];
     [angle.points addObject:[NSValue valueWithCGPoint:CGPointMake(100, 600)]];
-    _shape = angle;
-    [_shape setupLayer];
-    [self.view addSubview:angle];
+    _line = angle;
+    [_line setupLayer];
+    [_imageView addSubview:angle];
 }
 
 - (IBAction)drawCircle:(id)sender {
     [self drawInMainContext];
+    _eraserMode = NO;
     Circle *circle = [[Circle alloc] initWithFrame:CGRectMake (0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
     _circle = circle;
-    [self.view addSubview:circle];
+    [_imageView addSubview:circle];
 }
 
 - (IBAction)drawCurve:(id)sender {
-    _drawCurveMode = !_drawCurveMode;
-    if (_drawCurveMode)
-    {
-        [self drawInMainContext];
-        ShapeView *curve = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
-                                                               self.view.frame.size.height/2)];
-        _shape = curve;
-        [self.view addSubview:curve];
-    }
+    [self drawInMainContext];
+    _drawCurveMode = YES;
+    _eraserMode = NO;
+    ShapeView *curve = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
+                                                           self.view.frame.size.height/2)];
+    _line = curve;
+    [_imageView addSubview:curve];
+   
 }
 
 - (IBAction)deleteMode:(id)sender {
-    [self drawCurve:nil];
-    _shape.eraserMode = !_shape.eraserMode;
-    if (!_shape.eraserMode)
-    {
-        _drawCurveMode = NO;
+    [self drawInMainContext];
+    _eraserMode = !_eraserMode;
+    if (_eraserMode)
+    {         
+        ShapeView *curve = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
+                                                                       self.view.frame.size.height/2)];
+        _line = curve;
+        [_imageView addSubview:curve];
     }
-    [_deleteButton setTitleColor: _deleteMode? [UIColor redColor] : [UIColor blueColor] forState:UIControlStateNormal ];
+    _line.eraserMode = _eraserMode;
+    [_deleteButton setTitleColor: _line.eraserMode? [UIColor redColor] : [UIColor blueColor] forState:UIControlStateNormal ];
 }
+
+
+
+
+
+
+
+
 @end

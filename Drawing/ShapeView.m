@@ -28,15 +28,15 @@
 
 - (void)setupLayer
 {    
-    CAShapeLayer *layer = (CAShapeLayer *)self.layer;    
-    layer.strokeColor = [[UIColor blackColor] CGColor];
+    CAShapeLayer *layer = (CAShapeLayer *)self.layer;
     layer.fillColor = [[UIColor clearColor] CGColor];
+    layer.strokeColor = [[UIColor blackColor] CGColor];
     layer.lineWidth = 2;
     if (_eraserMode)
     {
         layer.strokeColor = [[UIColor whiteColor] CGColor];
-        layer.lineWidth = 10;
-    }
+        layer.lineWidth = 50;
+    }        
     UIBezierPath *path = [UIBezierPath bezierPath];
     for (int i = 0; i < _points.count; i++)
     {
@@ -53,6 +53,43 @@
     layer.path = [path CGPath];
 }
 
+- (void) movePoint: (CGPoint) point
+{
+    if (_points.count > 4)
+    {
+        if (CGPointEqualToPoint(_pointToChange, [[_points objectAtIndex:0] CGPointValue]))
+        {
+            float dx, dy;
+            dx = point.x - _pointToChange.x;
+            dy = point.y - _pointToChange.y;
+            for (int i = 0; i < _points.count; i++)
+            {
+                CGPoint oldPoint = [[_points objectAtIndex:i] CGPointValue];
+                CGPoint newPoint = CGPointMake(oldPoint.x + dx, oldPoint.y +dy);
+                [_points replaceObjectAtIndex:i withObject: [NSValue valueWithCGPoint:newPoint]];
+            }
+            _pointToChange = [[_points objectAtIndex:0] CGPointValue];
+            [self setupLayer];
+        }
+    }
+    else
+    {
+        int i = 0;
+        for (NSValue *value in self.points)
+        {
+            CGPoint p = [value CGPointValue];
+            if (CGPointEqualToPoint(p, self.pointToChange))
+            {
+                break;
+            }
+            i++;
+        }
+        self.pointToChange = point;
+        [self.points replaceObjectAtIndex:i withObject:[NSValue valueWithCGPoint: self.pointToChange]];
+        [self setupLayer];        
+    }
+}
+
 - (BOOL) checkPoint: (CGPoint) point withinRadius:(float)r
 {
     _pointToChange = CGPointZero;
@@ -67,8 +104,8 @@
             _pointToChange = currentPoint;
             return YES;
         }
-    }    
-        
+    }
+    
     UIBezierPath *path = [UIBezierPath bezierPathWithCGPath:[(CAShapeLayer *)self.layer path]];
     if([[self tapTargetForPath:path] containsPoint:point])
     {
