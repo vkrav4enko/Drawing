@@ -28,10 +28,15 @@
 
 - (void)setupLayer
 {    
-    CAShapeLayer *layer = (CAShapeLayer *)self.layer;
+    CAShapeLayer *layer = (CAShapeLayer *)self.layer;    
     layer.strokeColor = [[UIColor blackColor] CGColor];
     layer.fillColor = [[UIColor clearColor] CGColor];
     layer.lineWidth = 2;
+    if (_eraserMode)
+    {
+        layer.strokeColor = [[UIColor whiteColor] CGColor];
+        layer.lineWidth = 10;
+    }
     UIBezierPath *path = [UIBezierPath bezierPath];
     for (int i = 0; i < _points.count; i++)
     {

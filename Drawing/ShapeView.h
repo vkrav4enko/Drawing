@@ -11,7 +11,7 @@
 @interface ShapeView : UIView
 @property (nonatomic) CGPoint pointToChange;
 @property (nonatomic, strong) NSMutableArray *points;
-@property (nonatomic) float radius;
+@property (nonatomic) BOOL eraserMode;
 - (void)setupLayer;
 - (BOOL)checkPoint: (CGPoint) point withinRadius:(float)r;
 @end

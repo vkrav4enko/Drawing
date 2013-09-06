@@ -7,25 +7,17 @@
 //
 
 #import "ViewController.h"
-#import "Line.h"
-#import "Angle.h"
-#import "Curve.h"
 #import "Circle.h"
 #import "ShapeView.h"
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
-@property (nonatomic, strong) NSMutableArray *lines;
-@property (nonatomic, strong) NSMutableArray *angles;
-@property (nonatomic, strong) NSMutableArray *circles;
 @property (nonatomic, strong) NSMutableArray *points;
-@property (nonatomic, strong) NSMutableArray *curves;
+
 @property (nonatomic, strong) ShapeView *shape;
 @property (nonatomic, strong) Circle *circle;
 @property (nonatomic) BOOL isCircle;
 @property (nonatomic) BOOL isLine;
-@property (nonatomic) BOOL isAngle;
-@property (nonatomic) BOOL isCurve;
 @property (nonatomic) BOOL deleteMode;
 @property (nonatomic) BOOL drawCurveMode;
 
@@ -42,19 +34,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.lines = [NSMutableArray new];
-    self.angles = [NSMutableArray new];
-    self.circles = [NSMutableArray new];
-    self.curves = [NSMutableArray new];
     self.points = [NSMutableArray new];
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    _isCurve = NO;
+
     _isLine = NO;
     _isCircle = NO;
-    _isAngle = NO;
+
     
     for(UITouch *touch in touches)
     {
@@ -274,7 +262,12 @@
 }
 
 - (IBAction)deleteMode:(id)sender {
-    _deleteMode = !_deleteMode;
+    [self drawCurve:nil];
+    _shape.eraserMode = !_shape.eraserMode;
+    if (!_shape.eraserMode)
+    {
+        _drawCurveMode = NO;
+    }
     [_deleteButton setTitleColor: _deleteMode? [UIColor redColor] : [UIColor blueColor] forState:UIControlStateNormal ];
 }
 @end
