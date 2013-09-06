@@ -205,6 +205,7 @@
     _line = nil;
     _circle = nil;
     _imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    _drawCurveMode = NO;
     _eraserMode = NO;
     [_deleteButton setTitleColor: [UIColor blueColor] forState:UIControlStateNormal ];
 }
@@ -260,8 +261,7 @@
 - (IBAction)deleteMode:(id)sender
 {
     [self drawInMainContext];
-    _eraserMode = YES;
-            
+    _eraserMode = YES;            
     ShapeView *curve = [[ShapeView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,
                                                                    self.view.frame.size.height/2)];
     _line = curve;
